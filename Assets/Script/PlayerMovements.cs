@@ -31,15 +31,23 @@ public class PlayerMovements : MonoBehaviour
     [SerializeField] private float jumpCutMultiplier;
     [SerializeField] private float jumpInputBufferTime;
 
+    [Header("Dash")]
+    [SerializeField] private float dashingPower;
+    [SerializeField] private float dashingTime;
+
     [Header("Checks")]
     [SerializeField] private Transform checkGroundPoint;
     [SerializeField] private Vector2 checkGroundSize;
     [SerializeField] private LayerMask groundLayers;
 
+    [Header("Rendering")]
+    [SerializeField] private GameObject playerRenderer;
+
     private Rigidbody2D _rb;
 
     private float lastGroundTime;
     private float lastJumpTime;
+    private float lastDashTime;
     private float jumpInputBuffer;
 
     private bool isJumping;
@@ -70,7 +78,7 @@ public class PlayerMovements : MonoBehaviour
 
     private void Update()
     {
-        moveDir = _moveAction.ReadValue<float>();
+        moveDir = _moveAction.ReadValue<Vector2>().x;
         if (Mathf.Abs(moveDir) < moveDeadZone) moveDir = 0;
     }
 
@@ -94,9 +102,10 @@ public class PlayerMovements : MonoBehaviour
             }
         }
 
-        float targetSpeed = moveDir * speed;
+        
+        float targetSpeed = (moveDir == 0) ? 0 : Mathf.Sign(moveDir) * speed;
         float speedDiff = targetSpeed - _rb.velocity.x;
-        float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : decceleration;
+        float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : decceleration; 
         float movement = Mathf.Pow(Mathf.Abs(speedDiff) * accelRate, velPower) * Mathf.Sign(speedDiff);
         _rb.AddForce(movement * Vector2.right);
 
@@ -132,7 +141,7 @@ public class PlayerMovements : MonoBehaviour
     {
         if (isJumping && _rb.velocity.y > 0)
         {
-            _rb.AddForce(Vector2.down * _rb.velocity.y * (1 - jumpCutMultiplier), ForceMode2D.Impulse);
+            _rb.AddForce((1 - jumpCutMultiplier) * _rb.velocity.y * Vector2.down, ForceMode2D.Impulse);
         }
     }
 
