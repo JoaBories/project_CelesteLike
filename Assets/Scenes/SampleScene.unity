@@ -372,7 +372,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 1, g: 1, b: 1, a: 0.78431374}
       key1: {r: 1, g: 1, b: 1, a: 0}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -538,20 +538,22 @@ MonoBehaviour:
   decceleration: 7
   velPower: 0.9
   frictionAmount: 0.5
-  fallGravityMultiplier: 3
+  fallGravityMultiplier: 2
   gravityScale: 1
   jumpForce: 12
   coyoteTime: 1
-  jumpCutMultiplier: 0.2
+  jumpCutMultiplier: 0.5
   jumpInputBufferTime: 0.2
-  dashingPower: 0
-  dashingTime: 0
+  dashingPower: 10
+  dashingTime: 0.2
+  dashCooldown: 0.1
   checkGroundPoint: {fileID: 1922484438}
   checkGroundSize: {x: 0.89, y: 0.02}
   groundLayers:
     serializedVersion: 2
     m_Bits: 8
   playerRenderer: {fileID: 821631509}
+  trailRenderer: {fileID: 821631512}
 --- !u!61 &1874812651
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,9 +11,13 @@ public class PlayerMovements : MonoBehaviour
     private Controls _inputActions;
 
     private InputAction _moveAction;
+
+    public static Vector2 _direction;
     public static float moveDir;
 
     private InputAction _jumpAction;
+
+    private InputAction _dashAction;
 
 
     [Header("Movements Values")]
@@ -34,6 +39,7 @@ public class PlayerMovements : MonoBehaviour
     [Header("Dash")]
     [SerializeField] private float dashingPower;
     [SerializeField] private float dashingTime;
+    [SerializeField] private float dashCooldown;
 
     [Header("Checks")]
     [SerializeField] private Transform checkGroundPoint;
@@ -42,6 +48,8 @@ public class PlayerMovements : MonoBehaviour
 
     [Header("Rendering")]
     [SerializeField] private GameObject playerRenderer;
+    [SerializeField] private TrailRenderer trailRenderer;
+
 
     private Rigidbody2D _rb;
 
@@ -51,6 +59,9 @@ public class PlayerMovements : MonoBehaviour
     private float jumpInputBuffer;
 
     private bool isJumping;
+    private bool isDashing;
+
+    private bool canDash;
 
     private void Awake()
     {
@@ -69,6 +80,10 @@ public class PlayerMovements : MonoBehaviour
         _jumpAction.Enable();
         _jumpAction.performed += Jump;
         _jumpAction.canceled += JumpCancel;
+
+        _dashAction = _inputActions.Gameplay.Dash;
+        _dashAction.Enable();
+        _dashAction.performed += Dash;
     }
 
     private void OnDisable()
@@ -78,7 +93,9 @@ public class PlayerMovements : MonoBehaviour
 
     private void Update()
     {
-        moveDir = _moveAction.ReadValue<Vector2>().x;
+
+        _direction = _moveAction.ReadValue<Vector2>();
+        moveDir = _direction.x;
         if (Mathf.Abs(moveDir) < moveDeadZone) moveDir = 0;
     }
 
@@ -87,10 +104,12 @@ public class PlayerMovements : MonoBehaviour
         lastGroundTime -= Time.fixedDeltaTime;
         lastJumpTime -= Time.fixedDeltaTime;
         jumpInputBuffer -= Time.fixedDeltaTime;
+        lastDashTime -= Time.fixedDeltaTime;
 
         if (CheckGround())
         {
             lastGroundTime = 0;
+            if (lastDashTime <= -dashCooldown) canDash = true;
             if (isJumping && lastJumpTime < -0.1f)
             {
                 isJumping = false;
@@ -102,12 +121,14 @@ public class PlayerMovements : MonoBehaviour
             }
         }
 
-        
-        float targetSpeed = (moveDir == 0) ? 0 : Mathf.Sign(moveDir) * speed;
-        float speedDiff = targetSpeed - _rb.velocity.x;
-        float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : decceleration; 
-        float movement = Mathf.Pow(Mathf.Abs(speedDiff) * accelRate, velPower) * Mathf.Sign(speedDiff);
-        _rb.AddForce(movement * Vector2.right);
+        if (!isDashing)
+        {
+            float targetSpeed = (moveDir == 0) ? 0 : Mathf.Sign(moveDir) * speed;
+            float speedDiff = targetSpeed - _rb.velocity.x;
+            float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : decceleration;
+            float movement = Mathf.Pow(Mathf.Abs(speedDiff) * accelRate, velPower) * Mathf.Sign(speedDiff);
+            _rb.AddForce(movement * Vector2.right);
+        }
 
         if (lastGroundTime >= 0 && moveDir == 0)
         {
@@ -115,8 +136,17 @@ public class PlayerMovements : MonoBehaviour
             _rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
         }
 
-        if (_rb.velocity.y < 0.5) _rb.gravityScale = gravityScale * fallGravityMultiplier;
-        else _rb.gravityScale = gravityScale;
+        if(lastDashTime <= -dashingTime && isDashing)
+        {
+            isDashing = false;
+        }
+
+
+        if (!isDashing) 
+        {
+            if (_rb.velocity.y < 0.5) _rb.gravityScale = gravityScale * fallGravityMultiplier;
+            else _rb.gravityScale = gravityScale;
+        }
     }
 
     public bool CheckGround()
@@ -142,6 +172,17 @@ public class PlayerMovements : MonoBehaviour
         if (isJumping && _rb.velocity.y > 0)
         {
             _rb.AddForce((1 - jumpCutMultiplier) * _rb.velocity.y * Vector2.down, ForceMode2D.Impulse);
+        }
+    }
+
+    private void Dash(InputAction.CallbackContext context)
+    {
+        if (canDash)
+        {
+            isDashing = true;
+            lastDashTime = 0;
+            _rb.gravityScale = 0;
+            _rb.velocity = dashingPower * _direction;
         }
     }
 
