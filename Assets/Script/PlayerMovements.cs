@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,7 +10,7 @@ public class PlayerMovements : MonoBehaviour
 
     private InputAction _moveAction;
 
-    public static Vector2 _direction;
+    public  Vector2 _direction;
     public static float moveDir;
 
     private InputAction _jumpAction;
@@ -28,7 +26,9 @@ public class PlayerMovements : MonoBehaviour
     [SerializeField] private float velPower;
     [SerializeField] private float frictionAmount;
     [SerializeField] private float fallGravityMultiplier;
+    [SerializeField] private float fallGravityTreshold;
     [SerializeField] private float gravityScale;
+    [SerializeField] private float maxDownSpeed;
 
     [Header("Jump")]
     [SerializeField] private float jumpForce;
@@ -42,16 +42,18 @@ public class PlayerMovements : MonoBehaviour
     [SerializeField] private float dashCooldown;
 
     [Header("Checks")]
-    [SerializeField] private Transform checkGroundPoint;
     [SerializeField] private Vector2 checkGroundSize;
+    [SerializeField] private Vector2 checkGroundOffset;
+    [SerializeField] private Vector2 checkWallSize;
+    [SerializeField] private Vector2 checkWallOffset;
     [SerializeField] private LayerMask groundLayers;
 
     [Header("Rendering")]
     [SerializeField] private GameObject playerRenderer;
-    [SerializeField] private TrailRenderer trailRenderer;
 
 
     private Rigidbody2D _rb;
+    private SpriteRenderer _sprite;
 
     private float lastGroundTime;
     private float lastJumpTime;
@@ -62,11 +64,14 @@ public class PlayerMovements : MonoBehaviour
     private bool isDashing;
 
     private bool canDash;
+    private Vector2 dashDir;
 
     private void Awake()
     {
         instance = this;
+
         _rb = GetComponent<Rigidbody2D>();
+        _sprite = playerRenderer.GetComponent<SpriteRenderer>();
 
         _inputActions = new Controls();
     }
@@ -93,14 +98,20 @@ public class PlayerMovements : MonoBehaviour
 
     private void Update()
     {
-
         _direction = _moveAction.ReadValue<Vector2>();
+
         moveDir = _direction.x;
         if (Mathf.Abs(moveDir) < moveDeadZone) moveDir = 0;
+
+        if (moveDir < 0) _sprite.flipX = false;
+        else if (moveDir > 0) _sprite.flipX = true;
+
+        dashDir = new Vector2((_direction.x == 0) ? 0 : Mathf.Sign(_direction.x), (_direction.y == 0) ? 0 : Mathf.Sign(_direction.y));
+        if (dashDir == Vector2.zero) dashDir = (_sprite.flipX) ? Vector2.right : Vector2.left;
     }
 
     private void FixedUpdate()
-    {
+    {   
         lastGroundTime -= Time.fixedDeltaTime;
         lastJumpTime -= Time.fixedDeltaTime;
         jumpInputBuffer -= Time.fixedDeltaTime;
@@ -109,6 +120,7 @@ public class PlayerMovements : MonoBehaviour
         if (CheckGround())
         {
             lastGroundTime = 0;
+
             if (lastDashTime <= -dashCooldown) canDash = true;
             if (isJumping && lastJumpTime < -0.1f)
             {
@@ -119,21 +131,12 @@ public class PlayerMovements : MonoBehaviour
                     jumpInputBuffer = 0;
                 }
             }
-        }
-
-        if (!isDashing)
+        } else
         {
-            float targetSpeed = (moveDir == 0) ? 0 : Mathf.Sign(moveDir) * speed;
-            float speedDiff = targetSpeed - _rb.velocity.x;
-            float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : decceleration;
-            float movement = Mathf.Pow(Mathf.Abs(speedDiff) * accelRate, velPower) * Mathf.Sign(speedDiff);
-            _rb.AddForce(movement * Vector2.right);
-        }
-
-        if (lastGroundTime >= 0 && moveDir == 0)
-        {
-            float amount = Mathf.Min(Mathf.Abs(_rb.velocity.x), Mathf.Abs(frictionAmount)) * Mathf.Sign(_rb.velocity.x);
-            _rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
+            if (isJumping)
+            {
+                Debug.Log(lastJumpTime);
+            }
         }
 
         if(lastDashTime <= -dashingTime && isDashing)
@@ -141,27 +144,71 @@ public class PlayerMovements : MonoBehaviour
             isDashing = false;
         }
 
-
         if (!isDashing) 
         {
-            if (_rb.velocity.y < 0.5) _rb.gravityScale = gravityScale * fallGravityMultiplier;
+            float targetSpeed = (moveDir == 0) ? 0 : Mathf.Sign(moveDir) * speed;
+            float speedDiff = targetSpeed - _rb.velocity.x;
+            float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : decceleration;
+            float movement = Mathf.Pow(Mathf.Abs(speedDiff) * accelRate, velPower) * Mathf.Sign(speedDiff);
+            _rb.AddForce(movement * Vector2.right);
+
+            if (lastGroundTime >= 0 && moveDir == 0)
+            {
+                float amount = Mathf.Min(Mathf.Abs(_rb.velocity.x), Mathf.Abs(frictionAmount)) * Mathf.Sign(_rb.velocity.x);
+                _rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
+            }
+
+            if (_rb.velocity.y < -maxDownSpeed) _rb.velocity = new Vector2(_rb.velocity.x, -maxDownSpeed);
+
+            if (_rb.velocity.y < fallGravityTreshold)
+            {
+                _rb.gravityScale = gravityScale * fallGravityMultiplier;
+            }
             else _rb.gravityScale = gravityScale;
         }
     }
 
     public bool CheckGround()
     {
-        return Physics2D.OverlapBox(checkGroundPoint.position, checkGroundSize, 0, groundLayers);
+        return Physics2D.OverlapBox(transform.position + (Vector3) checkGroundOffset, checkGroundSize, 0, groundLayers);
+    }
+
+    public bool CheckWall(int dir)
+    {
+        return Physics2D.OverlapBox(transform.position + (Vector3) (checkWallOffset * new Vector2(dir, 0)), checkWallSize, 0, groundLayers);
     }
 
     private void Jump(InputAction.CallbackContext context)
     {
-        if (lastGroundTime >= -coyoteTime && !isJumping)
+        int wallDir = 0;
+        if (CheckWall(1))
         {
+            wallDir = 1;
+        } 
+        else if (CheckWall(-1))
+        {
+            wallDir = -1;
+        }
+
+
+        if (lastGroundTime >= -coyoteTime && !isJumping && lastDashTime < -0.22f)
+        {
+            if (isDashing)
+            {
+                isDashing = false;
+                Debug.Log(lastGroundTime);
+            }
+            _rb.velocity *= Vector2.right;
             _rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
             lastJumpTime = 0;
             isJumping = true;
-        } else
+        } 
+        else if ()
+        {
+
+        }
+        
+        else
         {
             jumpInputBuffer = jumpInputBufferTime;
         }
@@ -179,16 +226,29 @@ public class PlayerMovements : MonoBehaviour
     {
         if (canDash)
         {
+            if (dashDir.x != 0 && dashDir.y != 0)
+            {
+                _rb.velocity = dashingPower / 1.5f * dashDir;
+            }
+            else
+            {
+                _rb.velocity = dashingPower * dashDir;
+            }
+
+            lastGroundTime = coyoteTime * -1.1f;
             isDashing = true;
             lastDashTime = 0;
             _rb.gravityScale = 0;
-            _rb.velocity = dashingPower * _direction;
+            canDash = false;
         }
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
-        Gizmos.color = (CheckGround()) ? Color.green : Color.red;
-        Gizmos.DrawWireCube(checkGroundPoint.position, checkGroundSize);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(transform.position + (Vector3)checkGroundOffset, checkGroundSize);
+
+        Gizmos.DrawWireCube(transform.position + (Vector3)(checkWallOffset * new Vector2(1, 0)), checkWallSize);
+        Gizmos.DrawWireCube(transform.position + (Vector3)(checkWallOffset * new Vector2(-1, 0)), checkWallSize);
     }
 }
