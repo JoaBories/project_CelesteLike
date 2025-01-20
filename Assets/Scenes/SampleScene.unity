@@ -429,6 +429,7 @@ MonoBehaviour:
   gravityScale: 5
   maxDownSpeed: 20
   jumpForce: 27
+  wallJumpForce: {x: 15, y: 25}
   coyoteTime: 0.09
   jumpCutMultiplier: 0.6
   jumpInputBufferTime: 0.09
@@ -437,8 +438,8 @@ MonoBehaviour:
   dashCooldown: 0.1
   checkGroundSize: {x: 0.89, y: 0.02}
   checkGroundOffset: {x: 0, y: -0.69}
-  checkWallSize: {x: 0.2, y: 1.375}
-  checkWallOffset: {x: 0.6, y: 0}
+  checkWallSize: {x: 0.25, y: 1.1}
+  checkWallOffset: {x: 0.63, y: 0.1}
   groundLayers:
     serializedVersion: 2
     m_Bits: 8
@@ -486,8 +487,8 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.8, y: 1.175}
-  m_EdgeRadius: 0.1
+  m_Size: {x: 1, y: 1.375}
+  m_EdgeRadius: 0
 --- !u!1 &2130365508
 GameObject:
   m_ObjectHideFlags: 0

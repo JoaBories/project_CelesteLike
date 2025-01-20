@@ -17,6 +17,8 @@ public class PlayerMovements : MonoBehaviour
 
     private InputAction _dashAction;
 
+    private InputAction _grabAction;
+
 
     [Header("Movements Values")]
     [SerializeField] private float moveDeadZone;
@@ -32,6 +34,7 @@ public class PlayerMovements : MonoBehaviour
 
     [Header("Jump")]
     [SerializeField] private float jumpForce;
+    [SerializeField] private Vector2 wallJumpForce;
     [SerializeField] private float coyoteTime;
     [SerializeField] private float jumpCutMultiplier;
     [SerializeField] private float jumpInputBufferTime;
@@ -62,9 +65,14 @@ public class PlayerMovements : MonoBehaviour
 
     private bool isJumping;
     private bool isDashing;
+    private bool isGrabbed;
+
+    private bool grabingAction;
 
     private bool canDash;
     private Vector2 dashDir;
+
+    private int wallDir;
 
     private void Awake()
     {
@@ -89,11 +97,22 @@ public class PlayerMovements : MonoBehaviour
         _dashAction = _inputActions.Gameplay.Dash;
         _dashAction.Enable();
         _dashAction.performed += Dash;
+
+        _grabAction = _inputActions.Gameplay.Grab;
+        _grabAction.Enable();
+        _grabAction.started += StartGrab;
+        _grabAction.canceled += EndGrab;
     }
 
     private void OnDisable()
     {
         _moveAction.Disable();
+
+        _jumpAction.Disable();
+
+        _dashAction.Disable();
+
+        _grabAction.Disable();
     }
 
     private void Update()
@@ -117,6 +136,16 @@ public class PlayerMovements : MonoBehaviour
         jumpInputBuffer -= Time.fixedDeltaTime;
         lastDashTime -= Time.fixedDeltaTime;
 
+        wallDir = 0;
+        if (CheckWall(1))
+        {
+            wallDir = 1;
+        }
+        else if (CheckWall(-1))
+        {
+            wallDir = -1;
+        }
+
         if (CheckGround())
         {
             lastGroundTime = 0;
@@ -131,13 +160,7 @@ public class PlayerMovements : MonoBehaviour
                     jumpInputBuffer = 0;
                 }
             }
-        } else
-        {
-            if (isJumping)
-            {
-                Debug.Log(lastJumpTime);
-            }
-        }
+        } 
 
         if(lastDashTime <= -dashingTime && isDashing)
         {
@@ -175,37 +198,30 @@ public class PlayerMovements : MonoBehaviour
 
     public bool CheckWall(int dir)
     {
-        return Physics2D.OverlapBox(transform.position + (Vector3) (checkWallOffset * new Vector2(dir, 0)), checkWallSize, 0, groundLayers);
+        return Physics2D.OverlapBox(transform.position + (Vector3) (checkWallOffset * new Vector2(dir, 1)), checkWallSize, 0, groundLayers);
     }
 
     private void Jump(InputAction.CallbackContext context)
     {
-        int wallDir = 0;
-        if (CheckWall(1))
-        {
-            wallDir = 1;
-        } 
-        else if (CheckWall(-1))
-        {
-            wallDir = -1;
-        }
-
-
         if (lastGroundTime >= -coyoteTime && !isJumping && lastDashTime < -0.22f)
         {
             if (isDashing)
             {
                 isDashing = false;
-                Debug.Log(lastGroundTime);
             }
             _rb.velocity *= Vector2.right;
             _rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
             lastJumpTime = 0;
             isJumping = true;
         } 
-        else if ()
+        else if ( wallDir != 0 && lastDashTime < -0.22f)
         {
-
+            if (isDashing)
+            {
+                isDashing = false;
+            }
+            _rb.velocity *= Vector2.right;
+            _rb.AddForce(wallJumpForce * new Vector2(-wallDir, 1), ForceMode2D.Impulse);
         }
         
         else
@@ -243,12 +259,22 @@ public class PlayerMovements : MonoBehaviour
         }
     }
 
+    private void StartGrab(InputAction.CallbackContext context)
+    {
+        grabingAction = true;
+    }
+
+    private void EndGrab(InputAction.CallbackContext context)
+    {
+        grabingAction = false;
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(transform.position + (Vector3)checkGroundOffset, checkGroundSize);
 
-        Gizmos.DrawWireCube(transform.position + (Vector3)(checkWallOffset * new Vector2(1, 0)), checkWallSize);
-        Gizmos.DrawWireCube(transform.position + (Vector3)(checkWallOffset * new Vector2(-1, 0)), checkWallSize);
+        Gizmos.DrawWireCube(transform.position + (Vector3)(checkWallOffset * new Vector2(1, 1)), checkWallSize);
+        Gizmos.DrawWireCube(transform.position + (Vector3)(checkWallOffset * new Vector2(-1, 1)), checkWallSize);
     }
 }
