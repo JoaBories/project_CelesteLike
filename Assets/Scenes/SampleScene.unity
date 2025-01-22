@@ -432,7 +432,7 @@ MonoBehaviour:
   wallJumpForce: {x: 15, y: 25}
   coyoteTime: 0.09
   jumpCutMultiplier: 0.6
-  jumpInputBufferTime: 0.09
+  jumpInputBufferTime: 0.12
   dashingPower: 22
   dashingTime: 0.2
   dashCooldown: 0.1

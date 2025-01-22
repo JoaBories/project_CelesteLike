@@ -69,6 +69,8 @@ public class PlayerMovements : MonoBehaviour
 
     private bool grabingAction;
 
+    private bool hasQuittedGround;
+
     private bool canDash;
     private Vector2 dashDir;
 
@@ -125,7 +127,10 @@ public class PlayerMovements : MonoBehaviour
         if (moveDir < 0) _sprite.flipX = false;
         else if (moveDir > 0) _sprite.flipX = true;
 
-        dashDir = new Vector2((_direction.x == 0) ? 0 : Mathf.Sign(_direction.x), (_direction.y == 0) ? 0 : Mathf.Sign(_direction.y));
+        if (_direction.x < 0.3f && _direction.x > -0.3f) dashDir.x = 0;
+        else dashDir.x = Mathf.Sign(_direction.x);
+        if (_direction.y < 0.3f && _direction.y > -0.3f) dashDir.y = 0;
+        else dashDir.y = Mathf.Sign(_direction.y);
         if (dashDir == Vector2.zero) dashDir = (_sprite.flipX) ? Vector2.right : Vector2.left;
     }
 
@@ -149,7 +154,7 @@ public class PlayerMovements : MonoBehaviour
         if (CheckGround())
         {
             lastGroundTime = 0;
-
+            hasQuittedGround = false;
             if (lastDashTime <= -dashCooldown) canDash = true;
             if (isJumping && lastJumpTime < -0.1f)
             {
@@ -160,7 +165,11 @@ public class PlayerMovements : MonoBehaviour
                     jumpInputBuffer = 0;
                 }
             }
-        } 
+        }
+        else
+        {
+            hasQuittedGround = true;
+        }
 
         if(lastDashTime <= -dashingTime && isDashing)
         {
@@ -203,7 +212,7 @@ public class PlayerMovements : MonoBehaviour
 
     private void Jump(InputAction.CallbackContext context)
     {
-        if (lastGroundTime >= -coyoteTime && !isJumping && lastDashTime < -0.22f)
+        if (lastGroundTime >= -coyoteTime && !isJumping && !(isDashing && hasQuittedGround))
         {
             if (isDashing)
             {
