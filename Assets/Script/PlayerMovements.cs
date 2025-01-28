@@ -62,6 +62,7 @@ public class PlayerMovements : MonoBehaviour
     private float lastJumpTime;
     private float lastDashTime;
     private float jumpInputBuffer;
+    private float lastWallJumpTimer;
 
     private bool isJumping;
     private bool isDashing;
@@ -74,7 +75,7 @@ public class PlayerMovements : MonoBehaviour
     private bool canDash;
     private Vector2 dashDir;
 
-    private int wallDir;
+    private Vector2 wallDir;
 
     private void Awake()
     {
@@ -124,8 +125,11 @@ public class PlayerMovements : MonoBehaviour
         moveDir = _direction.x;
         if (Mathf.Abs(moveDir) < moveDeadZone) moveDir = 0;
 
-        if (moveDir < 0) _sprite.flipX = false;
-        else if (moveDir > 0) _sprite.flipX = true;
+        if (!isGrabbed)
+        {
+            if (moveDir < 0) _sprite.flipX = false;
+            else if (moveDir > 0) _sprite.flipX = true;
+        }
 
         if (_direction.x < 0.3f && _direction.x > -0.3f) dashDir.x = 0;
         else dashDir.x = Mathf.Sign(_direction.x);
@@ -140,15 +144,17 @@ public class PlayerMovements : MonoBehaviour
         lastJumpTime -= Time.fixedDeltaTime;
         jumpInputBuffer -= Time.fixedDeltaTime;
         lastDashTime -= Time.fixedDeltaTime;
+        lastWallJumpTimer -= Time.fixedDeltaTime;
 
-        wallDir = 0;
+        wallDir = Vector2.zero;
         if (CheckWall(1))
         {
-            wallDir = 1;
+            wallDir.y = 1;
         }
-        else if (CheckWall(-1))
+
+        if (CheckWall(-1))
         {
-            wallDir = -1;
+            wallDir.x = 1;
         }
 
         if (CheckGround())
@@ -171,12 +177,26 @@ public class PlayerMovements : MonoBehaviour
             hasQuittedGround = true;
         }
 
+        if(!isGrabbed && grabingAction && ((wallDir.y == 1 && _sprite.flipX) || (wallDir.x == 1 && !_sprite.flipX)) && lastWallJumpTimer < -0.2f)
+        {
+            isGrabbed = true;
+            isDashing = false;
+
+            _rb.velocity = Vector2.zero;
+            _rb.gravityScale = 0;
+        }
+
+        if (isGrabbed && !grabingAction)
+        {
+            isGrabbed = false;
+        }
+
         if(lastDashTime <= -dashingTime && isDashing)
         {
             isDashing = false;
         }
 
-        if (!isDashing) 
+        if (!isDashing && !isGrabbed) 
         {
             float targetSpeed = (moveDir == 0) ? 0 : Mathf.Sign(moveDir) * speed;
             float speedDiff = targetSpeed - _rb.velocity.x;
@@ -223,14 +243,30 @@ public class PlayerMovements : MonoBehaviour
             lastJumpTime = 0;
             isJumping = true;
         } 
-        else if ( wallDir != 0 && lastDashTime < -0.22f)
+        else if (isGrabbed)
+        {
+            lastWallJumpTimer = 0;
+            _rb.gravityScale = gravityScale;
+            isGrabbed = false;
+            if (dashDir.y == 1 && dashDir.x == 0)
+            {
+                _rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
+            }
+            else if (dashDir.x != 0)
+            {
+                float Xpropulsion = (wallDir.x == 1) ? 1 : -1;
+                _rb.AddForce(wallJumpForce * new Vector2(Xpropulsion, 1), ForceMode2D.Impulse);
+            }
+        }
+        else if ( wallDir != Vector2.zero && lastDashTime < -0.22f)
         {
             if (isDashing)
             {
                 isDashing = false;
             }
             _rb.velocity *= Vector2.right;
-            _rb.AddForce(wallJumpForce * new Vector2(-wallDir, 1), ForceMode2D.Impulse);
+            float Xpropulsion = (wallDir.x == 1) ? 1 : -1;
+            _rb.AddForce(wallJumpForce * new Vector2(Xpropulsion, 1), ForceMode2D.Impulse);
         }
         
         else
@@ -278,12 +314,16 @@ public class PlayerMovements : MonoBehaviour
         grabingAction = false;
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(transform.position + (Vector3)checkGroundOffset, checkGroundSize);
 
+        if (wallDir.y == 1) Gizmos.color = Color.green; 
+        else Gizmos.color = Color.red;
         Gizmos.DrawWireCube(transform.position + (Vector3)(checkWallOffset * new Vector2(1, 1)), checkWallSize);
+        if (wallDir.x == 1) Gizmos.color = Color.green; 
+        else Gizmos.color = Color.red;
         Gizmos.DrawWireCube(transform.position + (Vector3)(checkWallOffset * new Vector2(-1, 1)), checkWallSize);
     }
 }
