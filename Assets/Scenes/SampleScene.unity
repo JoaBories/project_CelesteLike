@@ -440,7 +440,7 @@ MonoBehaviour:
   enduranceLossWhenJump: 5
   enduranceLossMultiplyWhenClimbing: 0
   climbSpeed: 5
-  toTopOfWall: {x: 100, y: 10}
+  toTopOfWall: {x: 2, y: 6}
   checkGroundSize: {x: 0.89, y: 0.02}
   checkGroundOffset: {x: 0, y: -0.69}
   checkWallSize: {x: 0.3, y: 1.1}

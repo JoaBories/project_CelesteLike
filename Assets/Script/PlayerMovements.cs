@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -85,10 +86,9 @@ public class PlayerMovements : MonoBehaviour
     private Vector2 dashDir;
 
     private Vector2 wallDir;
+    private Vector2 lastWallDir;
 
     private float endurance;
-
-    private int tempToTopOfWallXpropulsion;
 
     private void Awake()
     {
@@ -163,6 +163,8 @@ public class PlayerMovements : MonoBehaviour
         if (CheckWall(1)) wallDir.y = 1;
         if (CheckWall(-1)) wallDir.x = 1;
 
+        if (wallDir != Vector2.zero) lastWallDir = wallDir;
+
         if (CheckGround())
         {
             lastGroundTime = 0;
@@ -189,6 +191,10 @@ public class PlayerMovements : MonoBehaviour
             isGrabbed = true;
             isDashing = false;
 
+            int wallDirection = (wallDir.x == 1) ? -1 : 1;
+            RaycastHit2D wallHit = Physics2D.Raycast(transform.position, new Vector2(wallDirection, 0), 3f, groundLayers);
+            if (!wallHit) transform.position = new Vector3(wallHit.point.x - (playerRenderer.transform.localScale.x/2) * wallDirection, transform.position.y, transform.position.z);
+
             _rb.velocity = Vector2.zero;
             _rb.gravityScale = 0;
         }
@@ -208,10 +214,8 @@ public class PlayerMovements : MonoBehaviour
                 isGrabbed = false;
                 if (CheckWallBelow())
                 {
-                    Debug.Log("yos");
-                    float Xpropulsion = (wallDir.x == 1) ? -1 : 1;
                     _rb.AddForce(toTopOfWall * new Vector2(0, 1), ForceMode2D.Impulse);
-                    Invoke("toTopOfWallX", 0.1f);
+                    StartCoroutine(toTopWallX(0.15f, (lastWallDir.x == 1) ? -1 : 1));
                 }
             }
 
@@ -261,9 +265,10 @@ public class PlayerMovements : MonoBehaviour
         return Physics2D.OverlapBox(transform.position + (Vector3)checkWallBelowOffset, checkWallBelowSize, 0, groundLayers);
     }
 
-    void toTopWallX()
+    private IEnumerator toTopWallX(float time, int xpropulsion)
     {
-        _rb.AddForce(toTopOfWall * new Vector2(tempToTopOfWallXpropulsion, 0), ForceMode2D.Impulse);
+        yield return new WaitForSeconds(time);
+        _rb.AddForce(toTopOfWall * new Vector2(xpropulsion, 0), ForceMode2D.Impulse);
     }
 
     private void Jump(InputAction.CallbackContext context)
