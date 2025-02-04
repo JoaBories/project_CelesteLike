@@ -34,7 +34,6 @@ public class PlayerMovements : MonoBehaviour
 
     [Header("Jump")]
     [SerializeField] private float jumpForce;
-    [SerializeField] private Vector2 wallJumpForce;
     [SerializeField] private float coyoteTime;
     [SerializeField] private float jumpCutMultiplier;
     [SerializeField] private float jumpInputBufferTime;
@@ -44,16 +43,26 @@ public class PlayerMovements : MonoBehaviour
     [SerializeField] private float dashingTime;
     [SerializeField] private float dashCooldown;
 
+    [Header ("walls")]
+    [SerializeField] private Vector2 wallJumpForce;
+    [SerializeField] private float maxEndurance;
+    [SerializeField] private float enduranceLossWhenJump;
+    [SerializeField] private float enduranceLossMultiplyWhenClimbing;
+    [SerializeField] private float climbSpeed;
+    [SerializeField] private Vector2 toTopOfWall;
+
     [Header("Checks")]
     [SerializeField] private Vector2 checkGroundSize;
     [SerializeField] private Vector2 checkGroundOffset;
     [SerializeField] private Vector2 checkWallSize;
     [SerializeField] private Vector2 checkWallOffset;
+    [SerializeField] private Vector2 checkWallBelowSize;
+    [SerializeField] private Vector2 checkWallBelowOffset;
     [SerializeField] private LayerMask groundLayers;
+
 
     [Header("Rendering")]
     [SerializeField] private GameObject playerRenderer;
-
 
     private Rigidbody2D _rb;
     private SpriteRenderer _sprite;
@@ -76,6 +85,10 @@ public class PlayerMovements : MonoBehaviour
     private Vector2 dashDir;
 
     private Vector2 wallDir;
+
+    private float endurance;
+
+    private int tempToTopOfWallXpropulsion;
 
     private void Awake()
     {
@@ -147,20 +160,14 @@ public class PlayerMovements : MonoBehaviour
         lastWallJumpTimer -= Time.fixedDeltaTime;
 
         wallDir = Vector2.zero;
-        if (CheckWall(1))
-        {
-            wallDir.y = 1;
-        }
-
-        if (CheckWall(-1))
-        {
-            wallDir.x = 1;
-        }
+        if (CheckWall(1)) wallDir.y = 1;
+        if (CheckWall(-1)) wallDir.x = 1;
 
         if (CheckGround())
         {
             lastGroundTime = 0;
             hasQuittedGround = false;
+            endurance = maxEndurance;
             if (lastDashTime <= -dashCooldown) canDash = true;
             if (isJumping && lastJumpTime < -0.1f)
             {
@@ -177,7 +184,7 @@ public class PlayerMovements : MonoBehaviour
             hasQuittedGround = true;
         }
 
-        if(!isGrabbed && grabingAction && ((wallDir.y == 1 && _sprite.flipX) || (wallDir.x == 1 && !_sprite.flipX)) && lastWallJumpTimer < -0.2f)
+        if(!isGrabbed && grabingAction && endurance > 0 && ((wallDir.y == 1 && _sprite.flipX) || (wallDir.x == 1 && !_sprite.flipX)) && lastWallJumpTimer < -0.2f)
         {
             isGrabbed = true;
             isDashing = false;
@@ -186,9 +193,28 @@ public class PlayerMovements : MonoBehaviour
             _rb.gravityScale = 0;
         }
 
-        if (isGrabbed && !grabingAction)
+        if (isGrabbed)
         {
-            isGrabbed = false;
+            endurance -= Time.fixedDeltaTime;
+
+            _rb.velocity = Vector2.up * dashDir.y * climbSpeed;
+
+            if (!grabingAction || endurance <= 0)
+            {
+                isGrabbed = false;
+            }
+            else if (wallDir == Vector2.zero)
+            {
+                isGrabbed = false;
+                if (CheckWallBelow())
+                {
+                    Debug.Log("yos");
+                    float Xpropulsion = (wallDir.x == 1) ? -1 : 1;
+                    _rb.AddForce(toTopOfWall * new Vector2(0, 1), ForceMode2D.Impulse);
+                    Invoke("toTopOfWallX", 0.1f);
+                }
+            }
+
         }
 
         if(lastDashTime <= -dashingTime && isDashing)
@@ -230,9 +256,19 @@ public class PlayerMovements : MonoBehaviour
         return Physics2D.OverlapBox(transform.position + (Vector3) (checkWallOffset * new Vector2(dir, 1)), checkWallSize, 0, groundLayers);
     }
 
+    public bool CheckWallBelow()
+    {
+        return Physics2D.OverlapBox(transform.position + (Vector3)checkWallBelowOffset, checkWallBelowSize, 0, groundLayers);
+    }
+
+    void toTopWallX()
+    {
+        _rb.AddForce(toTopOfWall * new Vector2(tempToTopOfWallXpropulsion, 0), ForceMode2D.Impulse);
+    }
+
     private void Jump(InputAction.CallbackContext context)
     {
-        if (lastGroundTime >= -coyoteTime && !isJumping && !(isDashing && hasQuittedGround))
+        if (lastGroundTime >= -coyoteTime && !isJumping && !(isDashing && hasQuittedGround) && !isGrabbed)
         {
             if (isDashing)
             {
@@ -248,17 +284,20 @@ public class PlayerMovements : MonoBehaviour
             lastWallJumpTimer = 0;
             _rb.gravityScale = gravityScale;
             isGrabbed = false;
-            if (dashDir.y == 1 && dashDir.x == 0)
+            endurance -= enduranceLossWhenJump;
+            float Xpropulsion = (wallDir.x == 1) ? 1 : -1;
+            if (dashDir.x == Xpropulsion)
             {
+                _rb.AddForce(wallJumpForce * new Vector2(Xpropulsion, 1), ForceMode2D.Impulse);
+                _sprite.flipX = !_sprite.flipX;
+            }
+            else if (dashDir.y != 0 || Mathf.Sign(dashDir.x) != Xpropulsion)
+            {
+                _rb.velocity = Vector2.zero;
                 _rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
             }
-            else if (dashDir.x != 0)
-            {
-                float Xpropulsion = (wallDir.x == 1) ? 1 : -1;
-                _rb.AddForce(wallJumpForce * new Vector2(Xpropulsion, 1), ForceMode2D.Impulse);
-            }
         }
-        else if ( wallDir != Vector2.zero && lastDashTime < -0.22f)
+        else if (wallDir != Vector2.zero && lastDashTime < -0.22f)
         {
             if (isDashing)
             {
@@ -266,9 +305,9 @@ public class PlayerMovements : MonoBehaviour
             }
             _rb.velocity *= Vector2.right;
             float Xpropulsion = (wallDir.x == 1) ? 1 : -1;
+            _sprite.flipX = !_sprite.flipX;
             _rb.AddForce(wallJumpForce * new Vector2(Xpropulsion, 1), ForceMode2D.Impulse);
         }
-        
         else
         {
             jumpInputBuffer = jumpInputBufferTime;
@@ -317,7 +356,12 @@ public class PlayerMovements : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
+        if (CheckGround()) Gizmos.color = Color.green;
         Gizmos.DrawWireCube(transform.position + (Vector3)checkGroundOffset, checkGroundSize);
+
+        wallDir = Vector2.zero;
+        if (CheckWall(1)) wallDir.y = 1;
+        if (CheckWall(-1)) wallDir.x = 1;
 
         if (wallDir.y == 1) Gizmos.color = Color.green; 
         else Gizmos.color = Color.red;
@@ -325,5 +369,9 @@ public class PlayerMovements : MonoBehaviour
         if (wallDir.x == 1) Gizmos.color = Color.green; 
         else Gizmos.color = Color.red;
         Gizmos.DrawWireCube(transform.position + (Vector3)(checkWallOffset * new Vector2(-1, 1)), checkWallSize);
+
+        Gizmos.color = Color.red;
+        if (CheckWallBelow()) Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(transform.position + (Vector3)checkWallBelowOffset, checkWallBelowSize);
     }
 }

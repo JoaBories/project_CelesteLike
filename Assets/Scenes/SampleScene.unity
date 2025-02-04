@@ -398,7 +398,7 @@ Transform:
   m_GameObject: {fileID: 1874812644}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -18.242, y: -4.11, z: 0}
+  m_LocalPosition: {x: -3.02, y: -4.22, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -429,17 +429,24 @@ MonoBehaviour:
   gravityScale: 5
   maxDownSpeed: 20
   jumpForce: 27
-  wallJumpForce: {x: 15, y: 25}
   coyoteTime: 0.09
   jumpCutMultiplier: 0.6
   jumpInputBufferTime: 0.12
   dashingPower: 22
   dashingTime: 0.2
   dashCooldown: 0.1
+  wallJumpForce: {x: 16, y: 25}
+  maxEndurance: 14
+  enduranceLossWhenJump: 5
+  enduranceLossMultiplyWhenClimbing: 0
+  climbSpeed: 5
+  toTopOfWall: {x: 100, y: 10}
   checkGroundSize: {x: 0.89, y: 0.02}
   checkGroundOffset: {x: 0, y: -0.69}
   checkWallSize: {x: 0.3, y: 1.1}
   checkWallOffset: {x: 0.608, y: 0.1}
+  checkWallBelowSize: {x: 1.4, y: 0.2}
+  checkWallBelowOffset: {x: 0, y: -0.8}
   groundLayers:
     serializedVersion: 2
     m_Bits: 8
