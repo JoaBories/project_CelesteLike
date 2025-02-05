@@ -43,6 +43,7 @@ public class PlayerMovements : MonoBehaviour
     [SerializeField] private float dashingPower;
     [SerializeField] private float dashingTime;
     [SerializeField] private float dashCooldown;
+    [SerializeField] private Vector2 superDashForce;
 
     [Header ("walls")]
     [SerializeField] private Vector2 wallJumpForce;
@@ -192,8 +193,11 @@ public class PlayerMovements : MonoBehaviour
             isDashing = false;
 
             int wallDirection = (wallDir.x == 1) ? -1 : 1;
-            RaycastHit2D wallHit = Physics2D.Raycast(transform.position, new Vector2(wallDirection, 0), 3f, groundLayers);
-            if (!wallHit) transform.position = new Vector3(wallHit.point.x - (playerRenderer.transform.localScale.x/2) * wallDirection, transform.position.y, transform.position.z);
+            RaycastHit2D wallHit = Physics2D.Raycast(transform.position - new Vector3(0, checkGroundOffset.y, 0), new Vector2(wallDirection, 0), 0.9f, groundLayers);
+            if (!wallHit) wallHit = Physics2D.Raycast(transform.position, new Vector2(wallDirection, 0), 0.9f, groundLayers);
+            if (!wallHit) wallHit = Physics2D.Raycast(transform.position + new Vector3(0, checkGroundOffset.y, 0), new Vector2(wallDirection, 0), 0.9f, groundLayers);
+
+            if (wallHit) transform.position = new Vector3(wallHit.point.x - (playerRenderer.transform.localScale.x/2) * wallDirection, transform.position.y, transform.position.z);
 
             _rb.velocity = Vector2.zero;
             _rb.gravityScale = 0;
@@ -273,47 +277,49 @@ public class PlayerMovements : MonoBehaviour
 
     private void Jump(InputAction.CallbackContext context)
     {
-        if (lastGroundTime >= -coyoteTime && !isJumping && !(isDashing && hasQuittedGround) && !isGrabbed)
+        Vector2 force = jumpForce * Vector2.up;
+        float XpropulsionForWall = (wallDir.x == 1) ? 1 : -1;
+        float Xpropulsion = (_sprite.flipX) ? 1 : -1;
+
+        if (lastGroundTime >= -coyoteTime && !isJumping && !(isDashing && hasQuittedGround) && !isGrabbed) // regular jump
         {
             if (isDashing)
             {
-                isDashing = false;
+                force = superDashForce * new Vector2(Xpropulsion, 1);
             }
             _rb.velocity *= Vector2.right;
-            _rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
+            _rb.AddForce(force, ForceMode2D.Impulse);
             lastJumpTime = 0;
             isJumping = true;
         } 
-        else if (isGrabbed)
+        else if (isGrabbed) // grab into jump
         {
             lastWallJumpTimer = 0;
             _rb.gravityScale = gravityScale;
             isGrabbed = false;
             endurance -= enduranceLossWhenJump;
-            float Xpropulsion = (wallDir.x == 1) ? 1 : -1;
-            if (dashDir.x == Xpropulsion)
+            if (dashDir.x == XpropulsionForWall)
             {
-                _rb.AddForce(wallJumpForce * new Vector2(Xpropulsion, 1), ForceMode2D.Impulse);
+                force = wallJumpForce * new Vector2(XpropulsionForWall, 1);
                 _sprite.flipX = !_sprite.flipX;
             }
-            else if (dashDir.y != 0 || Mathf.Sign(dashDir.x) != Xpropulsion)
+            else if (dashDir.y != 0 || Mathf.Sign(dashDir.x) != XpropulsionForWall)
             {
                 _rb.velocity = Vector2.zero;
-                _rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
             }
+            _rb.AddForce(force, ForceMode2D.Impulse);
         }
-        else if (wallDir != Vector2.zero && lastDashTime < -0.22f)
+        else if (wallDir != Vector2.zero && lastDashTime < -0.22f) // wall jump
         {
             if (isDashing)
             {
                 isDashing = false;
             }
             _rb.velocity *= Vector2.right;
-            float Xpropulsion = (wallDir.x == 1) ? 1 : -1;
             _sprite.flipX = !_sprite.flipX;
-            _rb.AddForce(wallJumpForce * new Vector2(Xpropulsion, 1), ForceMode2D.Impulse);
+            _rb.AddForce(wallJumpForce * new Vector2(XpropulsionForWall, 1), ForceMode2D.Impulse);
         }
-        else
+        else // buffer
         {
             jumpInputBuffer = jumpInputBufferTime;
         }
