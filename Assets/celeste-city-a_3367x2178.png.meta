@@ -43,9 +43,9 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 8
@@ -134,7 +134,490 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 320
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 146e71fbb62174c4096b49c779508678
+      internalID: -1101180559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_1
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 184
+        width: 320
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 450714055f141a546b721145ab84c907
+      internalID: -1750960011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_2
+      rect:
+        serializedVersion: 2
+        x: 496
+        y: 368
+        width: 320
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9d4b9f98d2f1f6c43a3ddf446c608536
+      internalID: -475863959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_3
+      rect:
+        serializedVersion: 2
+        x: 736
+        y: 552
+        width: 320
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 945ce2ce7c6fbe54485b48709f794fda
+      internalID: -1879158129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_4
+      rect:
+        serializedVersion: 2
+        x: 872
+        y: 736
+        width: 320
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 58b0db64c455f6146a78094a60258dd3
+      internalID: -125907259
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_5
+      rect:
+        serializedVersion: 2
+        x: 1344
+        y: 808
+        width: 320
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa40d2f0203579d4cad39f0c4ae458f2
+      internalID: 250741993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_6
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 920
+        width: 320
+        height: 288
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 16fa7f8fc16589d45b5b2b3abdf714b4
+      internalID: -1250250189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_7
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 920
+        width: 320
+        height: 288
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 97d8528a18b612348855bcc9009cad40
+      internalID: -986531668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_8
+      rect:
+        serializedVersion: 2
+        x: 656
+        y: 1208
+        width: 384
+        height: 368
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d4892d3713c74f4b97618c29c163b23
+      internalID: -1376945505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_9
+      rect:
+        serializedVersion: 2
+        x: 1040
+        y: 1208
+        width: 576
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b1f1988b8262484baec0bc7ad04db8e
+      internalID: 464063413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_10
+      rect:
+        serializedVersion: 2
+        x: 1616
+        y: 1208
+        width: 392
+        height: 192
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e126b7cafa33674095d2730ce53a462
+      internalID: 1810524456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_11
+      rect:
+        serializedVersion: 2
+        x: 952
+        y: 1664
+        width: 736
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57bf670c223aa8a4796abe395a0934b7
+      internalID: -2127918587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_12
+      rect:
+        serializedVersion: 2
+        x: 1688
+        y: 1480
+        width: 320
+        height: 232
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70c5920be1383164db76ad5c5004e4a7
+      internalID: -1249681911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_13
+      rect:
+        serializedVersion: 2
+        x: 2008
+        y: 1280
+        width: 320
+        height: 288
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a08ae418ced5ba14fb0a2ef8734ca214
+      internalID: -1372528734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_14
+      rect:
+        serializedVersion: 2
+        x: 2008
+        y: 1568
+        width: 320
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c06ac58304636842be3a77f024dbe25
+      internalID: 252201343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_15
+      rect:
+        serializedVersion: 2
+        x: 2328
+        y: 1456
+        width: 320
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dc9e5157c22f8274ba132aa8518be45f
+      internalID: 1662671159
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_16
+      rect:
+        serializedVersion: 2
+        x: 2872
+        y: 1640
+        width: 352
+        height: 216
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a61937bee9da0a4438a4d36126549b8d
+      internalID: -1255528479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_17
+      rect:
+        serializedVersion: 2
+        x: 2008
+        y: 1568
+        width: 320
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46fe602cf55731149a06134b223266ad
+      internalID: -1702426484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_18
+      rect:
+        serializedVersion: 2
+        x: 2056
+        y: 1768
+        width: 320
+        height: 304
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eac68a933b4c4ec40b8597381192f875
+      internalID: -669091252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_19
+      rect:
+        serializedVersion: 2
+        x: 2376
+        y: 1856
+        width: 320
+        height: 216
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ed5896ef4e8beb4fa4f70f299ac9698
+      internalID: 1629864261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_20
+      rect:
+        serializedVersion: 2
+        x: 2536
+        y: 1640
+        width: 336
+        height: 216
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 60679b3e8465e4c4cae37ae4a081886e
+      internalID: -1813705104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_21
+      rect:
+        serializedVersion: 2
+        x: 3016
+        y: 1904
+        width: 320
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b0f8e60fc4f42b543ba576015ce45f19
+      internalID: -680451967
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: celeste-city-a_3367x2178_22
+      rect:
+        serializedVersion: 2
+        x: 2696
+        y: 1856
+        width: 320
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c9add4a8f2cac44f8521bfe7acedeca
+      internalID: -1267803697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -145,7 +628,30 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      celeste-city-a_3367x2178_0: -1101180559
+      celeste-city-a_3367x2178_1: -1750960011
+      celeste-city-a_3367x2178_10: 1810524456
+      celeste-city-a_3367x2178_11: -2127918587
+      celeste-city-a_3367x2178_12: -1249681911
+      celeste-city-a_3367x2178_13: -1372528734
+      celeste-city-a_3367x2178_14: 252201343
+      celeste-city-a_3367x2178_15: 1662671159
+      celeste-city-a_3367x2178_16: -1255528479
+      celeste-city-a_3367x2178_17: -1702426484
+      celeste-city-a_3367x2178_18: -669091252
+      celeste-city-a_3367x2178_19: 1629864261
+      celeste-city-a_3367x2178_2: -475863959
+      celeste-city-a_3367x2178_20: -1813705104
+      celeste-city-a_3367x2178_21: -680451967
+      celeste-city-a_3367x2178_22: -1267803697
+      celeste-city-a_3367x2178_3: -1879158129
+      celeste-city-a_3367x2178_4: -125907259
+      celeste-city-a_3367x2178_5: 250741993
+      celeste-city-a_3367x2178_6: -1250250189
+      celeste-city-a_3367x2178_7: -986531668
+      celeste-city-a_3367x2178_8: -1376945505
+      celeste-city-a_3367x2178_9: 464063413
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
