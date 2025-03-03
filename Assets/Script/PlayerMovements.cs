@@ -70,6 +70,8 @@ public class PlayerMovements : MonoBehaviour
     private Rigidbody2D _rb;
     private SpriteRenderer _sprite;
 
+    private GameObject currentCheckpoint;
+
     private float lastGroundTime;
     private float lastJumpTime;
     private float lastDashTime;
@@ -254,6 +256,30 @@ public class PlayerMovements : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("orb"))
+        {
+            if (collision.GetComponent<DashOrb>().active)
+            {
+                collision.GetComponent<DashOrb>().Use();
+                endurance = maxEndurance;
+                canDash = true;
+            }
+        }
+        else if (collision.CompareTag("checkpoint"))
+        {
+            currentCheckpoint = collision.gameObject;
+        }
+        else if (collision.CompareTag("damage"))
+        {
+            if (currentCheckpoint != null)
+            {
+                transform.position = currentCheckpoint.transform.position;
+            }
+        }
+    }
+
     public bool CheckGround()
     {
         return Physics2D.OverlapBox(transform.position + (Vector3) checkGroundOffset, checkGroundSize, 0, groundLayers);
@@ -269,6 +295,12 @@ public class PlayerMovements : MonoBehaviour
         return Physics2D.OverlapBox(transform.position + (Vector3)checkWallBelowOffset, checkWallBelowSize, 0, groundLayers);
     }
 
+    public void spring()
+    {
+        endurance = maxEndurance;
+        canDash = true;
+    }
+
     private IEnumerator toTopWallX(float time, int xpropulsion)
     {
         yield return new WaitForSeconds(time);
@@ -279,8 +311,8 @@ public class PlayerMovements : MonoBehaviour
     {
         float XpropulsionForWall = (wallDir.x == 1) ? 1 : -1;
         float Xpropulsion = (_sprite.flipX) ? 1 : -1;
-        Vector2 force = jumpForce * Vector2.up;
         Vector2 wallForce = wallJumpForce * new Vector2(XpropulsionForWall, 1);
+        Vector2 force = jumpForce * Vector2.up;
 
         if (isDashing && CheckWallBelow() && !isJumping)
         {
@@ -297,14 +329,15 @@ public class PlayerMovements : MonoBehaviour
         } 
         else if (isGrabbed) // grab into jump
         {
-            lastWallJumpTimer = 0;
-            _rb.gravityScale = gravityScale;
-            isGrabbed = false;
             endurance -= enduranceLossWhenJump;
+            _rb.gravityScale = gravityScale;
+            lastWallJumpTimer = 0;
+            isGrabbed = false;
+
             if (dashDir.x == XpropulsionForWall)
             {
-                force = wallForce;
                 _sprite.flipX = !_sprite.flipX;
+                force = wallForce;
             }
             else if (dashDir.y != 0 || Mathf.Sign(dashDir.x) != XpropulsionForWall)
             {
@@ -316,8 +349,8 @@ public class PlayerMovements : MonoBehaviour
         {
             if (isDashing)
             {
-                isDashing = false;
                 wallForce = wallBounceForce * new Vector2(XpropulsionForWall, 1);
+                isDashing = false;
             }
             else
             {
@@ -347,11 +380,11 @@ public class PlayerMovements : MonoBehaviour
         {
             if (dashDir.x != 0 && dashDir.y != 0)
             {
-                _rb.velocity = dashingPower / 1.5f * dashDir;
+                _rb.velocity = dashingPower / 1.5f * dashDir * new Vector2(1.2f, 1);
             }
             else
             {
-                _rb.velocity = dashingPower * dashDir;
+                _rb.velocity = dashingPower * dashDir * new Vector2(1.2f, 1);
             }
 
             lastGroundTime = coyoteTime * -1.1f;

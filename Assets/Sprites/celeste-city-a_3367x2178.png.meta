@@ -45,7 +45,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 8
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 16384
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -144,7 +144,7 @@ TextureImporter:
         width: 320
         height: 184
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -165,7 +165,7 @@ TextureImporter:
         width: 320
         height: 184
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -186,7 +186,7 @@ TextureImporter:
         width: 320
         height: 184
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -207,7 +207,7 @@ TextureImporter:
         width: 320
         height: 184
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -228,7 +228,7 @@ TextureImporter:
         width: 320
         height: 184
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -236,27 +236,6 @@ TextureImporter:
       bones: []
       spriteID: 58b0db64c455f6146a78094a60258dd3
       internalID: -125907259
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: celeste-city-a_3367x2178_5
-      rect:
-        serializedVersion: 2
-        x: 1344
-        y: 808
-        width: 320
-        height: 200
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fa40d2f0203579d4cad39f0c4ae458f2
-      internalID: 250741993
       vertices: []
       indices: 
       edges: []
@@ -270,7 +249,7 @@ TextureImporter:
         width: 320
         height: 288
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -283,57 +262,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: celeste-city-a_3367x2178_7
-      rect:
-        serializedVersion: 2
-        x: 704
-        y: 920
-        width: 320
-        height: 288
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 97d8528a18b612348855bcc9009cad40
-      internalID: -986531668
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: celeste-city-a_3367x2178_8
-      rect:
-        serializedVersion: 2
-        x: 656
-        y: 1208
-        width: 384
-        height: 368
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6d4892d3713c74f4b97618c29c163b23
-      internalID: -1376945505
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: celeste-city-a_3367x2178_9
       rect:
         serializedVersion: 2
-        x: 1040
+        x: 1296
         y: 1208
-        width: 576
+        width: 320
         height: 184
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -354,7 +291,7 @@ TextureImporter:
         width: 392
         height: 192
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -362,48 +299,6 @@ TextureImporter:
       bones: []
       spriteID: 6e126b7cafa33674095d2730ce53a462
       internalID: 1810524456
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: celeste-city-a_3367x2178_11
-      rect:
-        serializedVersion: 2
-        x: 952
-        y: 1664
-        width: 736
-        height: 184
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 57bf670c223aa8a4796abe395a0934b7
-      internalID: -2127918587
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: celeste-city-a_3367x2178_12
-      rect:
-        serializedVersion: 2
-        x: 1688
-        y: 1480
-        width: 320
-        height: 232
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 70c5920be1383164db76ad5c5004e4a7
-      internalID: -1249681911
       vertices: []
       indices: 
       edges: []
@@ -417,7 +312,7 @@ TextureImporter:
         width: 320
         height: 288
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -425,27 +320,6 @@ TextureImporter:
       bones: []
       spriteID: a08ae418ced5ba14fb0a2ef8734ca214
       internalID: -1372528734
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: celeste-city-a_3367x2178_14
-      rect:
-        serializedVersion: 2
-        x: 2008
-        y: 1568
-        width: 320
-        height: 200
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6c06ac58304636842be3a77f024dbe25
-      internalID: 252201343
       vertices: []
       indices: 
       edges: []
@@ -459,7 +333,7 @@ TextureImporter:
         width: 320
         height: 184
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -467,90 +341,6 @@ TextureImporter:
       bones: []
       spriteID: dc9e5157c22f8274ba132aa8518be45f
       internalID: 1662671159
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: celeste-city-a_3367x2178_16
-      rect:
-        serializedVersion: 2
-        x: 2872
-        y: 1640
-        width: 352
-        height: 216
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a61937bee9da0a4438a4d36126549b8d
-      internalID: -1255528479
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: celeste-city-a_3367x2178_17
-      rect:
-        serializedVersion: 2
-        x: 2008
-        y: 1568
-        width: 320
-        height: 200
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 46fe602cf55731149a06134b223266ad
-      internalID: -1702426484
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: celeste-city-a_3367x2178_18
-      rect:
-        serializedVersion: 2
-        x: 2056
-        y: 1768
-        width: 320
-        height: 304
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: eac68a933b4c4ec40b8597381192f875
-      internalID: -669091252
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: celeste-city-a_3367x2178_19
-      rect:
-        serializedVersion: 2
-        x: 2376
-        y: 1856
-        width: 320
-        height: 216
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0ed5896ef4e8beb4fa4f70f299ac9698
-      internalID: 1629864261
       vertices: []
       indices: 
       edges: []
@@ -564,7 +354,7 @@ TextureImporter:
         width: 336
         height: 216
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -585,7 +375,7 @@ TextureImporter:
         width: 320
         height: 184
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -606,7 +396,7 @@ TextureImporter:
         width: 320
         height: 184
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
