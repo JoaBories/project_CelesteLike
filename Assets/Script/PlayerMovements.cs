@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -69,6 +68,7 @@ public class PlayerMovements : MonoBehaviour
 
     private Rigidbody2D _rb;
     private SpriteRenderer _sprite;
+    private Animator _Anim;
 
     private GameObject currentCheckpoint;
 
@@ -94,12 +94,15 @@ public class PlayerMovements : MonoBehaviour
 
     private float endurance;
 
+    private bool maxDownSpeedReached;
+
     private void Awake()
     {
         instance = this;
 
         _rb = GetComponent<Rigidbody2D>();
         _sprite = playerRenderer.GetComponent<SpriteRenderer>();
+        _Anim = GetComponent<Animator>();
 
         _inputActions = new Controls();
     }
@@ -144,15 +147,20 @@ public class PlayerMovements : MonoBehaviour
 
         if (!isGrabbed)
         {
-            if (moveDir < 0) _sprite.flipX = false;
-            else if (moveDir > 0) _sprite.flipX = true;
+            if (moveDir < 0) _sprite.flipX = true;
+            else if (moveDir > 0) _sprite.flipX = false;
         }
 
         if (_direction.x < 0.3f && _direction.x > -0.3f) dashDir.x = 0;
         else dashDir.x = Mathf.Sign(_direction.x);
         if (_direction.y < 0.3f && _direction.y > -0.3f) dashDir.y = 0;
         else dashDir.y = Mathf.Sign(_direction.y);
-        if (dashDir == Vector2.zero) dashDir = (_sprite.flipX) ? Vector2.right : Vector2.left;
+        if (dashDir == Vector2.zero) dashDir = (_sprite.flipX) ? Vector2.left : Vector2.right;
+
+        if (lastGroundTime >= -coyoteTime)
+        {
+            _Anim.SetFloat("Speed", Mathf.Abs(_rb.velocity.x)/speed);
+        }
     }
 
     private void FixedUpdate()
@@ -169,15 +177,31 @@ public class PlayerMovements : MonoBehaviour
 
         if (wallDir != Vector2.zero) lastWallDir = wallDir;
 
+        //End Dash
+        if(lastDashTime <= -dashingTime && isDashing)
+        {
+            isDashing = false;
+        }
+
+        //Checkground
         if (CheckGround())
         {
             lastGroundTime = 0;
             hasQuittedGround = false;
             endurance = maxEndurance;
             if (lastDashTime <= -dashCooldown) canDash = true;
+            if (lastJumpTime < -0.1f && !isGrabbed && !isDashing && !isJumping) _Anim.Play("Move");
+
             if (isJumping && lastJumpTime < -0.1f)
             {
                 isJumping = false;
+                _Anim.Play("Move");
+
+                if (maxDownSpeedReached)
+                {
+                    maxDownSpeedReached = false;
+                }
+
                 if (jumpInputBuffer >= 0)
                 {
                     Jump(new InputAction.CallbackContext());
@@ -188,9 +212,14 @@ public class PlayerMovements : MonoBehaviour
         else
         {
             hasQuittedGround = true;
+            if (!isGrabbed && !isDashing && !isJumping)
+            {
+                _Anim.Play("Fall");
+            }
         }
 
-        if(!isGrabbed && grabingAction && endurance > 0 && ((wallDir.y == 1 && _sprite.flipX) || (wallDir.x == 1 && !_sprite.flipX)) && lastWallJumpTimer < -0.2f)
+        //Begin Climb
+        if(!isGrabbed && grabingAction && endurance > 0 && ((wallDir.y == 1 && !_sprite.flipX) || (wallDir.x == 1 && _sprite.flipX)) && lastWallJumpTimer < -0.2f)
         {
             isGrabbed = true;
             isDashing = false;
@@ -204,13 +233,26 @@ public class PlayerMovements : MonoBehaviour
 
             _rb.velocity = Vector2.zero;
             _rb.gravityScale = 0;
+
+            _Anim.Play("Climb");
+            _Anim.SetFloat("UpSpeed", 0);
         }
 
+        //Climb
         if (isGrabbed)
         {
             endurance -= Time.fixedDeltaTime;
 
             _rb.velocity = Vector2.up * dashDir.y * climbSpeed;
+
+            if(dashDir.y != 0)
+            {
+                _Anim.SetFloat("UpSpeed", 1);
+            }
+            else
+            {
+                _Anim.SetFloat("UpSpeed", 0);
+            }
 
             if (!grabingAction || endurance <= 0)
             {
@@ -227,11 +269,8 @@ public class PlayerMovements : MonoBehaviour
             }
         }
 
-        if(lastDashTime <= -dashingTime && isDashing)
-        {
-            isDashing = false;
-        }
 
+        // Basic Movement
         if (!isDashing && !isGrabbed) 
         {
             float targetSpeed = (moveDir == 0) ? 0 : Mathf.Sign(moveDir) * speed;
@@ -246,7 +285,11 @@ public class PlayerMovements : MonoBehaviour
                 _rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
             }
 
-            if (_rb.velocity.y < -maxDownSpeed) _rb.velocity = new Vector2(_rb.velocity.x, -maxDownSpeed);
+            if (_rb.velocity.y < -maxDownSpeed)
+            {
+                _rb.velocity = new Vector2(_rb.velocity.x, -maxDownSpeed);
+                maxDownSpeedReached = true;
+            }
 
             if (_rb.velocity.y < fallGravityTreshold)
             {
@@ -310,7 +353,7 @@ public class PlayerMovements : MonoBehaviour
     private void Jump(InputAction.CallbackContext context)
     {
         float XpropulsionForWall = (wallDir.x == 1) ? 1 : -1;
-        float Xpropulsion = (_sprite.flipX) ? 1 : -1;
+        float Xpropulsion = (_sprite.flipX) ? -1 : 1;
         Vector2 wallForce = wallJumpForce * new Vector2(XpropulsionForWall, 1);
         Vector2 force = jumpForce * Vector2.up;
 
@@ -319,6 +362,7 @@ public class PlayerMovements : MonoBehaviour
             force = superDashForce * new Vector2(Xpropulsion, 1);
             _rb.velocity = Vector2.zero;
             _rb.AddForce(force, ForceMode2D.Impulse);
+            _Anim.Play("Jump");
         }
         else if (lastGroundTime >= -coyoteTime && !isJumping && !(isDashing && hasQuittedGround) && !isGrabbed) // regular jump
         {
@@ -326,6 +370,7 @@ public class PlayerMovements : MonoBehaviour
             lastJumpTime = 0;
             _rb.velocity *= Vector2.right;
             _rb.AddForce(force, ForceMode2D.Impulse);
+            _Anim.Play("Jump");
         } 
         else if (isGrabbed) // grab into jump
         {
@@ -333,6 +378,7 @@ public class PlayerMovements : MonoBehaviour
             _rb.gravityScale = gravityScale;
             lastWallJumpTimer = 0;
             isGrabbed = false;
+            _Anim.Play("Jump");
 
             if (dashDir.x == XpropulsionForWall)
             {
@@ -356,6 +402,7 @@ public class PlayerMovements : MonoBehaviour
             {
 
             }
+            _Anim.Play("Jump");
             _sprite.flipX = !_sprite.flipX;
             _rb.velocity *= Vector2.right;
             _rb.AddForce(wallForce, ForceMode2D.Impulse);
@@ -387,6 +434,7 @@ public class PlayerMovements : MonoBehaviour
                 _rb.velocity = dashingPower * dashDir * new Vector2(1.2f, 1);
             }
 
+            _Anim.Play("Dash");
             lastGroundTime = coyoteTime * -1.1f;
             isDashing = true;
             lastDashTime = 0;
