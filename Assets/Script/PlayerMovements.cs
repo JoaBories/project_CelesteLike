@@ -156,12 +156,12 @@ public class PlayerMovements : MonoBehaviour
             if (moveDir < 0)
             {
                 _sprite.flipX = true;
-                HairAnchor.instance.flipX = -1;
+                HairAnchor.instance.flipX = 1;
             }
             else if (moveDir > 0)
             {
                 _sprite.flipX = false;
-                HairAnchor.instance.flipX = 1;
+                HairAnchor.instance.flipX = -1;
             }
         }
 
