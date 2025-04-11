@@ -62,9 +62,15 @@ public class PlayerMovements : MonoBehaviour
     [SerializeField] private Vector2 checkWallBelowOffset;
     [SerializeField] private LayerMask groundLayers;
 
-
     [Header("Rendering")]
     [SerializeField] private GameObject playerRenderer;
+
+    [Header("Hair Offsets")]
+    [SerializeField] private Vector2 idleOffset;
+    [SerializeField] private Vector2 runOffset;
+    [SerializeField] private Vector2 goingUpOffset;
+    [SerializeField] private Vector2 goingDownOffset;
+    [SerializeField] private Vector2 dashOffset;
 
     private Rigidbody2D _rb;
     private SpriteRenderer _sprite;
@@ -147,8 +153,16 @@ public class PlayerMovements : MonoBehaviour
 
         if (!isGrabbed)
         {
-            if (moveDir < 0) _sprite.flipX = true;
-            else if (moveDir > 0) _sprite.flipX = false;
+            if (moveDir < 0)
+            {
+                _sprite.flipX = true;
+                HairAnchor.instance.flipX = -1;
+            }
+            else if (moveDir > 0)
+            {
+                _sprite.flipX = false;
+                HairAnchor.instance.flipX = 1;
+            }
         }
 
         if (_direction.x < 0.3f && _direction.x > -0.3f) dashDir.x = 0;
@@ -160,6 +174,25 @@ public class PlayerMovements : MonoBehaviour
         if (lastGroundTime >= -coyoteTime)
         {
             _Anim.SetFloat("Speed", Mathf.Abs(_rb.velocity.x)/speed);
+            if (Mathf.Abs(_rb.velocity.x) <= 0.5f)
+            {
+                HairAnchor.instance.partOffset = idleOffset;
+            }
+            else
+            {
+                HairAnchor.instance.partOffset = runOffset;
+            }
+        }
+        else
+        {
+            if (_rb.velocity.y > 0)
+            {
+                HairAnchor.instance.partOffset = goingUpOffset;
+            }
+            else
+            {
+                HairAnchor.instance.partOffset = goingDownOffset;
+            }
         }
     }
 
