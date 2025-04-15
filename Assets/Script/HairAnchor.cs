@@ -4,10 +4,12 @@ public class HairAnchor : MonoBehaviour
 {
     public static HairAnchor instance;
 
-    public Vector2 partOffset = Vector2.zero;
-    public int flipX = 1;
+    public float partOffsetX;
+    public float partOffsetY;
 
-    [SerializeField] private float lerpSpeed = 10;
+    public float lerpSpeed = 10;
+
+    [SerializeField] private float scalePow = 1;
 
     private Transform[] hairParts;
 
@@ -21,7 +23,7 @@ public class HairAnchor : MonoBehaviour
     private void Update()
     {
         Transform pieceToFollow = transform;
-        Vector2 goalPartOffset = partOffset * new Vector2(flipX, 1);
+        Vector2 goalPartOffset = new(partOffsetX, partOffsetY);
 
         Debug.Log(goalPartOffset);
 
@@ -29,7 +31,7 @@ public class HairAnchor : MonoBehaviour
         {
             if (!part.Equals(transform))
             {
-                Vector2 targetPos = (Vector2) pieceToFollow.position + goalPartOffset;
+                Vector2 targetPos = (Vector2) pieceToFollow.position + goalPartOffset * Mathf.Pow(part.localScale.x, scalePow);
                 Vector2 lerpPos = Vector2.Lerp(part.position, targetPos, Time.deltaTime * lerpSpeed);
 
                 part.position = lerpPos;

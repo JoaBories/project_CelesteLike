@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -66,11 +67,11 @@ public class PlayerMovements : MonoBehaviour
     [SerializeField] private GameObject playerRenderer;
 
     [Header("Hair Offsets")]
-    [SerializeField] private Vector2 idleOffset;
-    [SerializeField] private Vector2 runOffset;
-    [SerializeField] private Vector2 goingUpOffset;
-    [SerializeField] private Vector2 goingDownOffset;
-    [SerializeField] private Vector2 dashOffset;
+    [SerializeField] private Vector2 baseHairOffset;
+    [SerializeField] private float maxHairOffsetX;
+    [SerializeField] private float maxHairOffsetY;
+    [SerializeField] private float normalHairLerpSpeed;
+    [SerializeField] private float dashHairLerpSpeed;
 
     private Rigidbody2D _rb;
     private SpriteRenderer _sprite;
@@ -156,12 +157,10 @@ public class PlayerMovements : MonoBehaviour
             if (moveDir < 0)
             {
                 _sprite.flipX = true;
-                HairAnchor.instance.flipX = 1;
             }
             else if (moveDir > 0)
             {
                 _sprite.flipX = false;
-                HairAnchor.instance.flipX = -1;
             }
         }
 
@@ -174,24 +173,45 @@ public class PlayerMovements : MonoBehaviour
         if (lastGroundTime >= -coyoteTime)
         {
             _Anim.SetFloat("Speed", Mathf.Abs(_rb.velocity.x)/speed);
-            if (Mathf.Abs(_rb.velocity.x) <= 0.5f)
-            {
-                HairAnchor.instance.partOffset = idleOffset;
-            }
-            else
-            {
-                HairAnchor.instance.partOffset = runOffset;
-            }
+        }
+
+
+        //hairs
+        Vector2 hairOffset;
+        int inversSpriteDir = (_sprite.flipX) ? 1 : -1;
+
+        if (isDashing)
+        {
+            HairAnchor.instance.lerpSpeed = dashHairLerpSpeed;
+            HairAnchor.instance.partOffsetX = Mathf.Clamp(maxHairOffsetX * -dashDir.normalized.x, -maxHairOffsetX, maxHairOffsetX);
+            HairAnchor.instance.partOffsetY = Mathf.Clamp(maxHairOffsetY * -dashDir.normalized.y, -maxHairOffsetY, maxHairOffsetY);
         }
         else
         {
-            if (_rb.velocity.y > 0)
+            HairAnchor.instance.lerpSpeed = normalHairLerpSpeed;
+
+            if (lastGroundTime < 0)
             {
-                HairAnchor.instance.partOffset = goingUpOffset;
+                if (isGrabbed)
+                {
+                    HairAnchor.instance.partOffsetX = baseHairOffset.x * inversSpriteDir;
+                    HairAnchor.instance.partOffsetY = baseHairOffset.y;
+                }
+                else
+                {
+                    hairOffset = _rb.velocity / new Vector2(speed, maxDownSpeed);
+                    hairOffset *= new Vector2(Mathf.Abs(hairOffset.normalized.x), Mathf.Abs(hairOffset.normalized.y));
+                    HairAnchor.instance.partOffsetX = maxHairOffsetX * -hairOffset.x;
+                    HairAnchor.instance.partOffsetY = maxHairOffsetY * -hairOffset.y;
+                }
             }
             else
             {
-                HairAnchor.instance.partOffset = goingDownOffset;
+                float hairXOffset = inversSpriteDir * Mathf.Clamp(maxHairOffsetX * (baseHairOffset.x + Mathf.Abs(_rb.velocity.x/speed)), baseHairOffset.x, maxHairOffsetX);
+                hairOffset = new(hairXOffset, baseHairOffset.y);
+
+                HairAnchor.instance.partOffsetX = hairOffset.x;
+                HairAnchor.instance.partOffsetY = hairOffset.y;
             }
         }
     }

@@ -9,6 +9,7 @@ TagManager:
   - damage
   - checkpoint
   - orb
+  - platform
   layers:
   - Default
   - TransparentFX
