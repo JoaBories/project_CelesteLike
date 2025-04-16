@@ -9,6 +9,8 @@ public class HairAnchor : MonoBehaviour
 
     public float lerpSpeed = 10;
 
+    public Color hairColor = Color.white;
+
     [SerializeField] private float scalePow = 1;
 
     private Transform[] hairParts;
@@ -25,8 +27,6 @@ public class HairAnchor : MonoBehaviour
         Transform pieceToFollow = transform;
         Vector2 goalPartOffset = new(partOffsetX, partOffsetY);
 
-        Debug.Log(goalPartOffset);
-
         foreach (Transform part in hairParts)
         {
             if (!part.Equals(transform))
@@ -36,6 +36,18 @@ public class HairAnchor : MonoBehaviour
 
                 part.position = lerpPos;
                 pieceToFollow = part;
+            }
+        }
+
+        if (hairColor != GetComponent<SpriteRenderer>().color)
+        {
+            GetComponent<SpriteRenderer>().color = hairColor;
+            foreach (Transform part in hairParts)
+            {
+                if (!part.Equals(transform))
+                {
+                    part.GetComponent<SpriteRenderer>().color = hairColor;
+                }
             }
         }
     }

@@ -66,12 +66,16 @@ public class PlayerMovements : MonoBehaviour
     [Header("Rendering")]
     [SerializeField] private GameObject playerRenderer;
 
-    [Header("Hair Offsets")]
+    [Header("Hair")]
     [SerializeField] private Vector2 baseHairOffset;
     [SerializeField] private float maxHairOffsetX;
     [SerializeField] private float maxHairOffsetY;
     [SerializeField] private float normalHairLerpSpeed;
     [SerializeField] private float dashHairLerpSpeed;
+
+    [SerializeField] private Color redHairColor;
+    [SerializeField] private Color blueHairColor;
+    [SerializeField] private Color whiteHairColor;
 
     private Rigidbody2D _rb;
     private SpriteRenderer _sprite;
@@ -177,6 +181,7 @@ public class PlayerMovements : MonoBehaviour
 
 
         //hairs
+        //movements
         Vector2 hairOffset;
         int inversSpriteDir = (_sprite.flipX) ? 1 : -1;
 
@@ -214,6 +219,24 @@ public class PlayerMovements : MonoBehaviour
                 HairAnchor.instance.partOffsetY = hairOffset.y;
             }
         }
+
+        //color
+        if (isDashing)
+        {
+            HairAnchor.instance.hairColor = whiteHairColor;
+        } 
+        else
+        {
+            if (canDash)
+            {
+                HairAnchor.instance.hairColor = redHairColor;
+            }
+            else
+            {
+                HairAnchor.instance.hairColor = blueHairColor;
+            }
+        }
+        
     }
 
     private void FixedUpdate()
