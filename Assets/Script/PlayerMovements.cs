@@ -2,6 +2,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.VFX;
 
 public class PlayerMovements : MonoBehaviour
 {
@@ -45,6 +46,8 @@ public class PlayerMovements : MonoBehaviour
     [SerializeField] private float dashCooldown;
     [SerializeField] private Vector2 superDashForce;
     [SerializeField] private Vector2 wallBounceForce;
+
+    [SerializeField] private GameObject dashVFX;
 
     [Header ("walls")]
     [SerializeField] private Vector2 wallJumpForce;
@@ -509,6 +512,8 @@ public class PlayerMovements : MonoBehaviour
             {
                 _rb.velocity = dashingPower * dashDir * new Vector2(1.2f, 1);
             }
+
+            Instantiate(dashVFX, transform);
 
             _Anim.Play("Dash");
             lastGroundTime = coyoteTime * -1.1f;
