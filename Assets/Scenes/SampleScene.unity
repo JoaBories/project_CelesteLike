@@ -20294,7 +20294,7 @@ MonoBehaviour:
   dashCooldown: 0.1
   superDashForce: {x: 22, y: 27}
   wallBounceForce: {x: 15, y: 35}
-  dashVFX: {fileID: 5445540164481113560, guid: 75107b4237c882f4e8cbb9f0daf3a582, type: 3}
+  dashVFX: {fileID: 3957814360598705506, guid: 48d5cd416ed022047aa15b14e7f28667, type: 3}
   wallJumpForce: {x: 19, y: 26}
   maxEndurance: 14
   enduranceLossWhenJump: 5

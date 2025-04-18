@@ -513,7 +513,7 @@ public class PlayerMovements : MonoBehaviour
                 _rb.velocity = dashingPower * dashDir * new Vector2(1.2f, 1);
             }
 
-            Instantiate(dashVFX, transform);
+            Instantiate(dashVFX, transform.position, Quaternion.identity);
 
             _Anim.Play("Dash");
             lastGroundTime = coyoteTime * -1.1f;
