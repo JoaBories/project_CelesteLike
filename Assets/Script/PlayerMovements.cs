@@ -336,10 +336,12 @@ public class PlayerMovements : MonoBehaviour
             if (!grabingAction || endurance <= 0)
             {
                 isGrabbed = false;
+                _Anim.Play("Fall");
             }
             else if (wallDir == Vector2.zero)
             {
                 isGrabbed = false;
+                _Anim.Play("Fall");
                 if (CheckWallBelow())
                 {
                     _rb.AddForce(toTopOfWall * new Vector2(0, 1), ForceMode2D.Impulse);
@@ -421,6 +423,7 @@ public class PlayerMovements : MonoBehaviour
     {
         endurance = maxEndurance;
         canDash = true;
+        isDashing = false;
     }
 
     private IEnumerator toTopWallX(float time, int xpropulsion)
@@ -513,7 +516,7 @@ public class PlayerMovements : MonoBehaviour
                 _rb.velocity = dashingPower * dashDir * new Vector2(1.2f, 1);
             }
 
-            Instantiate(dashVFX, transform.position, Quaternion.identity);
+            Destroy(Instantiate(dashVFX, transform.position, Quaternion.identity), 1f);
 
             _Anim.Play("Dash");
             lastGroundTime = coyoteTime * -1.1f;
